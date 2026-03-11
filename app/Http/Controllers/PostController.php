@@ -4,87 +4,118 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        $posts = Post::select('id', 'title', 'body')->get();
-        return response()->json($posts, 200);
+        try {
+            $posts = Post::select('id', 'title', 'body')->get();
+
+            if ($posts->isEmpty()) {
+                return $this->RespuestaError('No se encontraron posts', [], 404);
+            }
+
+            return $this->RespuestaJson($posts, 'Lista de posts', 200);
+
+
+        } catch (\Throwable $th) {
+            return $this->RespuestaError('Error al obtener los posts', ['error' => $th->getMessage()], 500);
+        }
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $post = Post::create([
-            'title' => $request->title,
-            'body' => $request->body,
-        ]);
-        return response()->json($post, 201);
+        try {
+
+            // Validacion de datos
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string|max:255',
+                'body' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->RespuestaError(
+                'Error en la validación de datos',
+                ['errores' => $validator->errors()],
+                422
+                );
+            }
+
+            $post = Post::create([
+                'title' => $request->title,
+                'body' => $request->body,
+            ]);
+
+            return $this->RespuestaJson($post, 'Post creado', 201);
+
+        } catch (\Throwable $th) {
+            return $this->RespuestaError('Error al crear el post', ['error' => $th->getMessage()], 500);
+        }
+
+
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        $post = Post::select('id', 'title', 'body')->find($id);
-        if ($post) {
-            return response()->json($post, 200);
-        } else {
-            return response()->json(['message' => 'Post not found'], 404);
+        try {
+            $post = Post::select('id', 'title', 'body')->find($id);
+            if ($post) {
+                return $this->RespuestaJson($post, 'Post encontrado', 200);
+            } else {
+                return $this->RespuestaError('Post no encontrado', [], 404);
+            }
+        } catch (\Throwable $th) {
+            return $this->RespuestaError('Error al obtener el post', ['error' => $th->getMessage()], 500);
         }
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        $post = Post::find($id);
-        if ($post) {
-            $post->update([
-                'title' => $request->title,
-                'body' => $request->body,
-            ]);
-            return response()->json($post, 200);
-        } else {
-            return response()->json(['message' => 'Post not found'], 404);
+        try {
+            $post = Post::find($id);
+            if ($post) {
+                $post->update([
+                    'title' => $request->title,
+                    'body' => $request->body,
+                ]);
+                return $this->RespuestaJson($post, 'Post actualizado', 200);
+            } else {
+                return $this->RespuestaError('Post no encontrado', [], 404);
+            }
+        } catch (\Throwable $th) {
+            return $this->RespuestaError('Error al actualizar el post', ['error' => $th->getMessage()], 500);
         }
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        $post = Post::find($id);
-        if ($post) {
-            $post->delete();
-            return response()->json(['message' => 'Post eliminado'], 200);
-        } else {
-            return response()->json(['message' => 'Post not found'], 404);
+        try {
+
+            $post = Post::find($id);
+            if ($post) {
+                $post->delete();
+                return $this->RespuestaJson(null, 'Post eliminado', 200);
+            } else {
+                return $this->RespuestaError('Post no encontrado', [], 404);
+            }
+        } catch (\Throwable $th) {
+            return $this->RespuestaError('Error al eliminar el post', ['error' => $th->getMessage()], 500);
         }
     }
 }
