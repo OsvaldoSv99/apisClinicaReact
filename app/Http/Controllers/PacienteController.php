@@ -12,52 +12,47 @@ class PacienteController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $paciente = Paciente::all();
+
+            if ($paciente->isEmpty()) {
+                return $this->RespuestaError('No se encontraron pacientes', [], 404);
+            }
+            return $this->RespuestaJson($paciente, 'Lista de pacientes', 200);
+
+        } catch (\Throwable $th) {
+
+            return $this->RespuestaError('Error al obtener los pacientes', ['error' => $th->getMessage()], 500);
+
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Paciente $paciente)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Paciente $paciente)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Paciente $paciente)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Paciente $paciente)
     {
         //

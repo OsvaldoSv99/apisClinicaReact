@@ -20,7 +20,6 @@ class PostController extends Controller
 
             return $this->RespuestaJson($posts, 'Lista de posts', 200);
 
-
         } catch (\Throwable $th) {
             return $this->RespuestaError('Error al obtener los posts', ['error' => $th->getMessage()], 500);
         }
