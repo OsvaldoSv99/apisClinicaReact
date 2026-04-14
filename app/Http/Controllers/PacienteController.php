@@ -27,7 +27,6 @@ class PacienteController extends Controller
         }
     }
 
-
     public function create()
     {
         //

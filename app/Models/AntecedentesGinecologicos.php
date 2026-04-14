@@ -21,9 +21,4 @@ class AntecedentesGinecologicos extends Model
 
 ];
 
-
-    public function paciente()
-    {
-        return $this->belongsTo(Paciente::class, 'id_paciente');
-    }
 }
