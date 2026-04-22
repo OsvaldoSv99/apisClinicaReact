@@ -156,12 +156,12 @@ class PacienteController extends Controller
             'estado_civil' => $validated['estado_civil'],
             'religion' => $validated['religion'],
             'escolaridad' => $validated['escolaridad'],
-            'alergias' => $validated['alergias'] ?? null,
-            'medicamentos' => $validated['medicamentos'] ?? null,
+            'alergias' => $validated['alergias'],
+            'medicamentos' => $validated['medicamentos'],
             'contacto_telefono' => $validated['contacto_telefono'],
             'contacto_nombre' => $validated['contacto_nombre'],
             'tipo_sangre' => $validated['tipo_sangre'],
-            'activo' => 1,
+            'activo' => $request->activo,
         ];
 
         $paciente = Paciente::where('id', $paciente->id)->update($data);
