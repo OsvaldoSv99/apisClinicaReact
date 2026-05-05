@@ -7,57 +7,46 @@ use Illuminate\Http\Request;
 
 class RecetasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index($id)
     {
-        //
+        try {
+            $pacientes = Recetas::where('id_paciente', $id)->get();
+            if ($pacientes->isEmpty()) {
+                return $this->RespuestaError('No se encontraron recetas', [], 404);
+            }
+            return $this->RespuestaJson($pacientes, 'Lista de recetas', 200);
+        } catch (\Throwable $th) {
+            return $this->RespuestaError('Error al obtener las recetas', ['error' => $th->getMessage()], 500);
+        }
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Recetas $recetas)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Recetas $recetas)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Recetas $recetas)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Recetas $recetas)
     {
         //
